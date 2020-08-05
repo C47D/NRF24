@@ -6,7 +6,6 @@
 
 #include "NRF24.h"
 #include "NRF24_DEFS.h"
-#include "NRF24_CONFIG.h"
 #include "NRF24_COMMANDS.h"
 #include "NRF24_INTERFACE.h"
 
