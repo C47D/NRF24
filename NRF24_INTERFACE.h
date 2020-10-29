@@ -67,6 +67,16 @@ void NRF24_clear_bit(nrf_radio *radio, const nrf_register reg, const uint8_t bit
  */
 void NRF24_set_bit(nrf_radio *radio, const nrf_register reg, const uint8_t bit_pos);
 
+/**
+ * Update a group of bits on a register.
+ *
+ * @param[in]	radio: Radio handle.
+ * @param[in]	reg: Register to be written, see @c nrf_register.
+ * @param[in]	bits_mask: Mask of bits to be updated, bits to change must be set to 1.
+ * @param[in]	value: New value of the bit group.
+ */
+void NRF24_write_bits(nrf_radio *radio, const nrf_register reg, uint8_t bits_mask, uint8_t value);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

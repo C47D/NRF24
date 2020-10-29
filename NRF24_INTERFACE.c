@@ -74,6 +74,28 @@ void NRF24_set_bit(nrf_radio *radio, const nrf_register reg, const uint8_t bit_p
     NRF24_write_bit(radio, reg, bit_pos, NRF_BIT_SET);
 }
 
+/* Value must be shifted already, so we can OR values,
+ * mask can be also ORed togheter. */
+void NRF24_write_bits(nrf_radio *radio, const nrf_register reg, uint8_t mask, uint8_t value)
+{
+    NRF24_ASSERT(radio);
+    NRF24_ASSERT(value <= UINT8_MAX);
+
+    /* Get the current register value */
+    uint8_t reg_value = 0;
+    NRF24_read_reg(radio, reg, &reg_value, sizeof reg_value);
+    
+    /* Invert the mask, when we AND it with the register value we set
+     * the masked bits to zero. */
+    uint8_t new_value = reg_value & (~mask);
+
+    /* Then we can 'add' the value we want */
+    new_value |= value;
+
+    /* Write the new value back to the radio */
+    NRF24_write_reg(radio, reg, &new_value, sizeof new_value);
+}
+
 /**
  * Set (1) or clear (0) the specified bit of the specified NRF24 register.
  *

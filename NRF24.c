@@ -6,7 +6,6 @@
 
 #include "NRF24.h"
 #include "NRF24_DEFS.h"
-#include "NRF24_CONFIG.h"
 #include "NRF24_COMMANDS.h"
 #include "NRF24_INTERFACE.h"
 
@@ -387,8 +386,9 @@ void NRF24_enable_dynamic_payload(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
 
-    NRF24_set_bit(radio, NRF_REG_FEATURE, NRF_FEATURE_BIT_EN_ACK_PAY);
-    NRF24_set_bit(radio, NRF_REG_FEATURE, NRF_FEATURE_BIT_EN_DPL);
+    NRF24_write_bits(radio, NRF_REG_FEATURE,
+    	(1 << NRF_FEATURE_BIT_EN_ACK_PAY) | (1 << NRF_FEATURE_BIT_EN_DPL),
+    	NRF_ENABLE_DYN_PAYLOAD_LEN | NRF_ENABLE_PAYLOAD_WITH_ACK);
 }
 
 void NRF24_enable_dynamic_payload_on_pipe(nrf_radio *radio, const nrf_pipe pipe)
@@ -403,8 +403,9 @@ void NRF24_disable_dynamic_payload(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
 
-    NRF24_clear_bit(radio, NRF_REG_FEATURE, NRF_FEATURE_BIT_EN_ACK_PAY);
-    NRF24_clear_bit(radio, NRF_REG_FEATURE, NRF_FEATURE_BIT_EN_DPL);
+    NRF24_write_bits(radio, NRF_REG_FEATURE,
+    	(1 << NRF_FEATURE_BIT_EN_ACK_PAY) | (1 << NRF_FEATURE_BIT_EN_DPL),
+    	NRF_DISABLE_DYN_PAYLOAD_LEN | NRF_DISABLE_PAYLOAD_WITH_ACK);
 }
 
 void NRF24_disable_dynamic_payload_on_pipe(nrf_radio *radio, const nrf_pipe pipe)
