@@ -18,7 +18,7 @@ struct _nrf_radio {
 };
 */
 
-void NRF24_radio_init(nrf_radio *radio,
+void NRF24_init(nrf_radio *radio,
 	nrf_spi_xfer spi_xfer_cb, nrf_write_ce write_ce_cb,
 	nrf_read_irq read_irq_cb, nrf_delay_ms delay_ms_cb)
 {
