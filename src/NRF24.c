@@ -602,7 +602,7 @@ void NRF24_clear_irq_flag(nrf_radio *radio, const nrf_irq irq_flag)
 {
 	NRF24_ASSERT(radio);
 
-    const uint8_t mask = 1 << irq_flag;
+    const uint8_t mask = (uint8_t) (1U << irq_flag);
     uint8_t status = NRF24_get_status(radio);
     status |= mask;
     
