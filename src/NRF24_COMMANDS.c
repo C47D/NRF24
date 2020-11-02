@@ -125,6 +125,6 @@ uint8_t NRF24_cmd_nop(nrf_radio *radio)
 static uint8_t NRF24_send_cmd(nrf_radio *radio, const nrf_cmd cmd)
 {
     uint8_t status = 0;
-    NRF24_spi_xfer_cb(radio, &cmd, &status, 1);
+    NRF24_hal_spi_xfer(radio, &cmd, &status, 1);
     return status;
 }

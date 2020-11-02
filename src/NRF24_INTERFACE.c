@@ -25,7 +25,7 @@ uint8_t NRF24_read_reg(nrf_radio *radio, const nrf_register reg,
     uint8_t data_in[data_size + 1];
     
     data_in[0] = NRF_CMD_R_REGISTER | reg;
-    NRF24_spi_xfer_cb(radio, data_in, data_out, NRF_ARRAY_SIZE(data_in));
+    NRF24_hal_spi_xfer(radio, data_in, data_out, NRF_ARRAY_SIZE(data_in));
 
     for (size_t idx = 0; idx < data_size; idx++) {
     	data[idx] = data_out[idx + 1];
@@ -46,7 +46,7 @@ uint8_t NRF24_write_reg(nrf_radio *radio, const nrf_register reg,
     	data_in[idx + 1] = data[idx];
     }
 
-    NRF24_spi_xfer_cb(radio, data_in, data_out, NRF_ARRAY_SIZE(data_in));
+    NRF24_hal_spi_xfer(radio, data_in, data_out, NRF_ARRAY_SIZE(data_in));
     
     return data_out[0];
 }
@@ -117,20 +117,6 @@ static void NRF24_write_bit(nrf_radio *radio, const nrf_register reg,
     
     const uint8_t bit_mask = 1 << bit_pos;
     
-    // Read the bit value before writing to it.
-    // Check if the bit is 1
-    if ((temp & bit_mask) != 0) {
-        // it is 1, return if we wanted to set it to 1
-        if (NRF_BIT_SET == value) {
-            return;
-        }
-    } else { // the bit is 0
-        // it is 0, return if we wanted to set it to 0
-        if (NRF_BIT_CLEAR == value) {
-            return;
-        }
-    }
-
     // Calculate the new value to be written into the register
     temp = value ? temp | bit_mask : temp & ~bit_mask;
 

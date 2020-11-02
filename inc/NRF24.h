@@ -69,69 +69,6 @@ void NRF24_init(nrf_radio *radio,
 	nrf_read_irq read_irq_cb, nrf_delay_ms delay_ms_cb);
 
 /**
- * @brief Set the spi_xfer_data_cb callback.
- *
- * @param radio
- * @param new_spi_xfer
- */
-void NRF24_set_spi_xfer_cb(nrf_radio *radio, nrf_spi_xfer new_spi_xfer);
-
-/**
- * @brief Set the write_ce_cb callback.
- *
- * @param radio
- * @param new_write_ce
- */
-void NRF24_set_write_ce_cb(nrf_radio *radio, nrf_write_ce new_write_ce);
-
-/**
- * @brief Set the read_irq_cb callback.
- *
- * @param radio
- * @param new_read_irq
- */
-void NRF24_set_read_irq_cb(nrf_radio *radio, nrf_read_irq new_read_irq);
-
-/**
- * @brief Set the delay_ms_cb callback.
- *
- * @param radio
- * @param new_delay_ms
- */
-void NRF24_set_delay_ms_cb(nrf_radio *radio, nrf_delay_ms new_delay_ms);
-
-/**
- *
- * @param radio
- * @param in
- * @param out
- * @param xfer_size
- */
-void NRF24_spi_xfer_cb(nrf_radio *radio,
-		const uint8_t *in, uint8_t *out, const size_t xfer_size);
-
-/**
- *
- * @param radio
- * @return
- */
-nrf_gpio NRF24_read_irq_cb(nrf_radio *radio);
-
-/**
- *
- * @param radio
- * @param state
- */
-void NRF24_write_ce_cb(nrf_radio *radio, nrf_gpio state);
-
-/**
- *
- * @param radio
- * @param ms
- */
-void NRF24_delay_cb(nrf_radio *radio, uint32_t ms);
-
-/**
  * @brief Sleep the radio.
  *
  * Put the NRF24 radio on Standby-I mode.

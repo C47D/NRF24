@@ -16,8 +16,9 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
-#include "NRF24_DEFS.h"
 #include "NRF24.h"
+#include "NRF24_HAL.h"
+#include "NRF24_DEFS.h"
 
 /**
  * Read the specified NRF24 register (bigger than 1 byte).

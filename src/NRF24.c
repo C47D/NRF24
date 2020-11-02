@@ -5,6 +5,7 @@
 */
 
 #include "NRF24.h"
+#include "NRF24_HAL.h"
 #include "NRF24_DEFS.h"
 #include "NRF24_COMMANDS.h"
 #include "NRF24_INTERFACE.h"
@@ -32,38 +33,6 @@ void NRF24_init(nrf_radio *radio,
 	radio->write_ce_cb = write_ce_cb;
 }
 
-void NRF24_set_spi_xfer_cb(nrf_radio *radio, nrf_spi_xfer new_spi_xfer)
-{
-	NRF24_ASSERT(radio);
-	NRF24_ASSERT(new_spi_xfer);
-
-	radio->spi_xfer_data_cb = new_spi_xfer;
-}
-
-void NRF24_set_write_ce_cb(nrf_radio *radio, nrf_write_ce new_write_ce)
-{
-	NRF24_ASSERT(radio);
-	NRF24_ASSERT(new_write_ce);
-
-	radio->write_ce_cb = new_write_ce;
-}
-
-void NRF24_set_read_irq_cb(nrf_radio *radio, nrf_read_irq new_read_irq)
-{
-	NRF24_ASSERT(radio);
-	NRF24_ASSERT(new_read_irq);
-
-	radio->read_irq_cb = new_read_irq;
-}
-
-void NRF24_set_delay_ms_cb(nrf_radio *radio, nrf_delay_ms new_delay_ms)
-{
-	NRF24_ASSERT(radio);
-	NRF24_ASSERT(new_delay_ms);
-
-	radio->delay_ms_cb = new_delay_ms;
-}
-
 void NRF24_sleep(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
@@ -74,11 +43,12 @@ void NRF24_sleep(nrf_radio *radio)
 void NRF24_wakeup(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
+	NRF24_ASSERT(radio->delay_ms_cb);
 
     NRF24_set_bit(radio, NRF_REG_CONFIG, NRF_CONFIG_BIT_PWR_UP);
     /* after leaving standby-I mode the radio need a time to return to TX or
      * RX Mode */
-    NRF24_delay_cb(radio, 5);
+    NRF24_hal_delay(radio, 5);
 }
 
 void NRF24_set_mode(nrf_radio *radio, const nrf_mode mode)
@@ -461,24 +431,28 @@ void NRF24_disable_payload_with_no_ack(nrf_radio *radio)
 void NRF24_start_listening(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
+	NRF24_ASSERT(radio->write_ce_cb);
 
-	NRF24_write_ce_cb(radio, GPIO_SET);
+	NRF24_hal_set_ce(radio, GPIO_SET);
 }
 
 void NRF24_stop_listening(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
+	NRF24_ASSERT(radio->write_ce_cb);
 
-	NRF24_write_ce_cb(radio, GPIO_CLEAR);
+	NRF24_hal_set_ce(radio, GPIO_CLEAR);
 }
 
 void NRF24_transmit_pulse(nrf_radio *radio)
 {
 	NRF24_ASSERT(radio);
+	NRF24_ASSERT(radio->write_ce_cb);
+	NRF24_ASSERT(radio->delay_ms_cb);
 
-	NRF24_write_ce_cb(radio, GPIO_SET);
-	NRF24_delay_cb(radio, NRF_CE_PULSE_WIDTH_US);
-	NRF24_write_ce_cb(radio, GPIO_CLEAR);
+	NRF24_hal_set_ce(radio, GPIO_SET);
+	NRF24_hal_delay(radio, NRF_CE_PULSE_WIDTH_US);
+	NRF24_hal_set_ce(radio, GPIO_CLEAR);
 }
 
 uint8_t NRF24_get_status(nrf_radio *radio)
@@ -548,11 +522,12 @@ uint8_t NRF24_is_data_ready(nrf_radio *radio)
 void NRF24_get_rx_payload(nrf_radio *radio, uint8_t *payload, const size_t payload_size)
 {
 	NRF24_ASSERT(radio);
+	NRF24_ASSERT(radio->write_ce_cb);
 	NRF24_ASSERT(payload);
 
-	NRF24_write_ce_cb(radio, GPIO_CLEAR);
+	NRF24_hal_set_ce(radio, GPIO_CLEAR);
     NRF24_cmd_read_rx_payload(radio, payload, payload_size);
-    NRF24_write_ce_cb(radio, GPIO_SET);
+    NRF24_hal_set_ce(radio, GPIO_SET);
 }
 
 void NRF24_tx_transmit_no_ack(nrf_radio *radio, const uint8_t *payload, size_t payload_size)
@@ -675,31 +650,3 @@ void NRF24_flush_tx(nrf_radio *radio)
     NRF24_cmd_flush_tx(radio);
 }
 
-void NRF24_spi_xfer_cb(nrf_radio *radio,
-		const uint8_t *in, uint8_t *out, const size_t xfer_size)
-{
-	NRF24_ASSERT(radio->spi_xfer_data_cb);
-
-	radio->spi_xfer_data_cb(in, out, xfer_size);
-}
-
-nrf_gpio NRF24_read_irq_cb(nrf_radio *radio)
-{
-	NRF24_ASSERT(radio->read_irq_cb);
-
-	return radio->read_irq_cb();
-}
-
-void NRF24_write_ce_cb(nrf_radio *radio, nrf_gpio state)
-{
-	NRF24_ASSERT(radio->write_ce_cb);
-
-	radio->write_ce_cb(state);
-}
-
-void NRF24_delay_cb(nrf_radio *radio, uint32_t ms)
-{
-	NRF24_ASSERT(radio->delay_ms_cb);
-
-	radio->delay_ms_cb(ms);
-}
