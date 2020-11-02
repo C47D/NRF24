@@ -1,14 +1,14 @@
-#ifndef NRF24_HAL
-#define NRF24_HAL
+#ifndef NRF24_HAL_H
+#define NRF24_HAL_H
 
-#include "NRF24.h"
+#include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stddef.h>
-#include <stdint.h>
+#include "NRF24.h"
 
 void NRF24_hal_spi_xfer(nrf_radio *radio, const void *send, void *rcv, size_t xfer_len);
 void NRF24_hal_set_ce(nrf_radio *radio, nrf_gpio state);
@@ -19,4 +19,4 @@ void NRF24_hal_delay(nrf_radio *radio, uint32_t ms);
 } /* extern "C" */
 #endif
 
-#endif /* NRF24_HAL */
+#endif /* NRF24_HAL_H */

@@ -9,12 +9,12 @@
 #ifndef NRF24_INTERFACE_H
 #define NRF24_INTERFACE_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stddef.h>
-#include <stdint.h>
 
 #include "NRF24.h"
 #include "NRF24_HAL.h"

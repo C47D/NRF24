@@ -7,12 +7,12 @@
 #ifndef NRF24_FUNCS_H
 #define NRF24_FUNCS_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stddef.h>
-#include <stdint.h>
 
 #include "NRF24_DEFS.h"
 

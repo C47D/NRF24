@@ -11,13 +11,13 @@
 
 #ifndef NRF24_COMMANDS_H
 #define NRF24_COMMANDS_H
-    
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stddef.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "NRF24.h"
 #include "NRF24_DEFS.h"
