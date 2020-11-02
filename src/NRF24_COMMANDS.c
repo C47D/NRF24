@@ -45,7 +45,7 @@ uint8_t NRF24_cmd_read_rx_payload(nrf_radio *radio, uint8_t *payload, const size
     
     nrf_data_in[0] = NRF_CMD_R_RX_PAYLOAD;
     
-    NRF24_spi_xfer_cb(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_out);
+    NRF24_hal_spi_xfer(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_out);
     
     for (size_t idx = 0; idx < payload_size; idx++) {
     	payload[idx] = nrf_data_out[idx + 1];
@@ -65,7 +65,7 @@ uint8_t NRF24_cmd_write_tx_payload(nrf_radio *radio, const uint8_t *payload, con
     	nrf_data_in[idx + 1] = payload[idx];
     }
     
-    NRF24_spi_xfer_cb(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
+    NRF24_hal_spi_xfer(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
 
     return nrf_data_out[0];
 }
@@ -78,7 +78,7 @@ uint8_t NRF24_cmd_read_payload_width(nrf_radio *radio, uint8_t *payload_width)
 
     uint8_t nrf_data_out[2] = {0};
     
-    NRF24_spi_xfer_cb(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
+    NRF24_hal_spi_xfer(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
     *payload_width = nrf_data_out[1];
 
     return nrf_data_out[0];
@@ -96,7 +96,7 @@ uint8_t NRF24_cmd_payload_write_ack(nrf_radio *radio, const nrf_pipe pipe,
     	nrf_data_in[idx + 1] = payload[idx];
     }
     
-    NRF24_spi_xfer_cb(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
+    NRF24_hal_spi_xfer(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
 
     return nrf_data_out[0];
 }
@@ -112,7 +112,7 @@ uint8_t NRF24_cmd_payload_without_ack(nrf_radio *radio, const uint8_t* payload, 
     	nrf_data_in[idx + 1] = payload[idx];
     }
     
-    NRF24_spi_xfer_cb(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
+    NRF24_hal_spi_xfer(radio, nrf_data_in, nrf_data_out, sizeof nrf_data_in);
 
     return nrf_data_out[0];
 }
