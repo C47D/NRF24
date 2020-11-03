@@ -66,6 +66,15 @@ int main(void)
 }
 ```
 
+# Unit tests
+
+This repository has always worked for me as a playground, right now I'm adding
+Unit tests to it using cpputest.
+
+For you to be able to run the unit tests you should have a copy of cpputest on
+your machine and export the environment variable CPPUTEST_HOME pointing to the
+root of the cpputest directory, then run make on the root directory of this repo.
+
 # CHANGELOG
 
 v0.1 Public release, a lot to document.
