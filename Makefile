@@ -41,4 +41,7 @@ INCLUDE_DIRS += $(CPPUTEST_HOME)/include/Platforms/Gcc
 
 INCLUDE_DIRS += inc
 
+# Turn on CppUMock
+CPPUTEST_USE_EXTENSIONS = Y
+
 include $(CPPUTEST_HOME)/build/MakefileWorker.mk
