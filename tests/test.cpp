@@ -1,5 +1,7 @@
 #include "CppUTest/TestHarness.h"
 
+#include "CppUTestExt/MockSupport.h"
+
 #include "NRF24.h"
 
 TEST_GROUP(NRF24)
@@ -21,6 +23,9 @@ TEST_GROUP(NRF24)
 	radio.read_irq_cb = NULL;
 	radio.delay_ms_cb = NULL;
 	radio.spi_xfer_data_cb = NULL;
+
+        mock().checkExpectations();
+        mock().clear();
     }
 
     /* Helper functions */
