@@ -20,6 +20,7 @@ endif
 SRC_FILES += src/NRF24.c
 SRC_FILES += src/NRF24_INTERFACE.c
 SRC_FILES += src/NRF24_COMMANDS.c
+SRC_FILES += src/NRF24_HAL.c
 
 # --- TEST_SRC_FILES and TEST_SRC_DIRS ---
 # Test files are always included in the build.
@@ -33,6 +34,8 @@ SRC_FILES += src/NRF24_COMMANDS.c
 TEST_SRC_FILES +=
 TEST_SRC_DIRS += tests
 
+MOCKS_SRC_DIRS += tests
+
 # INCLUDE_DIRS are searched in order after the included file's
 # containing directory
 
@@ -40,6 +43,7 @@ INCLUDE_DIRS += $(CPPUTEST_HOME)/include
 INCLUDE_DIRS += $(CPPUTEST_HOME)/include/Platforms/Gcc
 
 INCLUDE_DIRS += inc
+INCLUDE_DIRS += $(FFF_HOME)
 
 # Turn on CppUMock
 CPPUTEST_USE_EXTENSIONS = Y
