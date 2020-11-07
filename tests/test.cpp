@@ -78,23 +78,17 @@ TEST(NRF24, GivenUserCallbacksThenInitSuccess)
     CHECK_EQUAL(0, success);
 }
 
-TEST(NRF24, testceWrite)
+TEST(NRF24, callCeWrite)
 {
     mock().expectOneCall("mock_ce_write")
             .withParameter("state", GPIO_SET);
 
-    nrf_radio test_radio;
-
-    int success = NRF24_init(&test_radio, mock_spi_xfer,
+    int success = NRF24_init(&radio, mock_spi_xfer,
         mock_ce_write,
         NULL,
         mock_delay_cb);
     
     (void) success;
 
-    /* When calling test_radio.write_ce_cb we fulfill the expectations */
-    // test_radio.write_ce_cb(GPIO_SET);
-
-    /* When calling NRF24_hal_set_ce we do not fulfill the expectations */
-    NRF24_hal_set_ce(&test_radio, GPIO_SET);
+    NRF24_hal_set_ce(&radio, GPIO_SET);
 }
