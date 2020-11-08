@@ -38,26 +38,6 @@ TEST_GROUP(NRF24)
 
     void teardown(void)
     {
-        mock().checkExpectations();
-        mock().clear();
-    }
-
-    /* Helper functions */
-    static void ce_write(nrf_gpio state)
-    {
-        (void) state;
-    }
-
-    static void spi_xfer(const uint8_t *in, uint8_t *out, size_t xfer_size)
-    {
-        (void) in;
-        (void) out;
-        (void) xfer_size;
-    }
-
-    static void delay_cb(uint32_t ms)
-    {
-        (void) ms;
     }
 };
 
