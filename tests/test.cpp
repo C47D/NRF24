@@ -71,4 +71,27 @@ TEST(NRF24, callCeWrite)
     (void) success;
 
     NRF24_hal_set_ce(&radio, GPIO_SET);
+    
+    mock().checkExpectations();
+    mock().clear();
+}
+
+TEST(NRF24, readIrqSignal)
+{
+    mock().expectOneCall("mock_irq_read")
+            .andReturnValue(GPIO_SET);
+
+    int success = NRF24_init(&radio, mock_spi_xfer,
+        mock_ce_write,
+        mock_irq_read,
+        mock_delay_cb);
+    
+    (void) success;
+
+    nrf_gpio irq = NRF24_hal_get_irq(&radio);
+
+    CHECK_EQUAL(GPIO_SET, irq);
+    
+    mock().checkExpectations();
+    mock().clear();
 }
