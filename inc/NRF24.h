@@ -64,7 +64,7 @@ struct _nrf_radio {
  * @param[in]	read_irq_cb: . Required only when using IRQ signal.
  * @param[in]	delay_ms_cb: . Required.
  */
-void NRF24_init(nrf_radio *radio,
+int NRF24_init(nrf_radio *radio,
 	nrf_spi_xfer spi_xfer_cb, nrf_write_ce write_ce_cb,
 	nrf_read_irq read_irq_cb, nrf_delay_ms delay_ms_cb);
 

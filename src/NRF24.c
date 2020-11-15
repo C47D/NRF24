@@ -19,18 +19,23 @@ struct _nrf_radio {
 };
 */
 
-void NRF24_init(nrf_radio *radio,
+int NRF24_init(nrf_radio *radio,
 	nrf_spi_xfer spi_xfer_cb, nrf_write_ce write_ce_cb,
 	nrf_read_irq read_irq_cb, nrf_delay_ms delay_ms_cb)
 {
-	NRF24_ASSERT(spi_xfer_cb);
-	NRF24_ASSERT(write_ce_cb);
-	NRF24_ASSERT(delay_ms_cb);
+    if ((NULL == radio) ||
+        (NULL == spi_xfer_cb) ||
+        (NULL == write_ce_cb) ||
+        (NULL == delay_ms_cb)) {
 
+        return 1;
+    }
 	radio->delay_ms_cb = delay_ms_cb;
 	radio->read_irq_cb = read_irq_cb;
 	radio->spi_xfer_data_cb = spi_xfer_cb;
 	radio->write_ce_cb = write_ce_cb;
+
+    return 0;
 }
 
 void NRF24_sleep(nrf_radio *radio)
@@ -602,7 +607,7 @@ void NRF24_clear_irq_flag(nrf_radio *radio, const nrf_irq irq_flag)
 {
 	NRF24_ASSERT(radio);
 
-    const uint8_t mask = 1 << irq_flag;
+    const uint8_t mask = (uint8_t) (1U << irq_flag);
     uint8_t status = NRF24_get_status(radio);
     status |= mask;
     

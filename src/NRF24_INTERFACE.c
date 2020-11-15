@@ -24,7 +24,7 @@ uint8_t NRF24_read_reg(nrf_radio *radio, const nrf_register reg,
     uint8_t data_out[data_size + 1];
     uint8_t data_in[data_size + 1];
     
-    data_in[0] = NRF_CMD_R_REGISTER | reg;
+    data_in[0] = (uint8_t) (NRF_CMD_R_REGISTER | reg);
     NRF24_hal_spi_xfer(radio, data_in, data_out, NRF_ARRAY_SIZE(data_in));
 
     for (size_t idx = 0; idx < data_size; idx++) {
@@ -40,7 +40,7 @@ uint8_t NRF24_write_reg(nrf_radio *radio, const nrf_register reg,
     uint8_t data_out[data_size + 1];
     uint8_t data_in[data_size + 1];
     
-    data_in[0] = NRF_CMD_W_REGISTER | reg;
+    data_in[0] = (uint8_t) (NRF_CMD_W_REGISTER | reg);
 
     for (size_t idx = 0; idx < data_size; idx++) {
     	data_in[idx + 1] = data[idx];
@@ -79,7 +79,6 @@ void NRF24_set_bit(nrf_radio *radio, const nrf_register reg, const uint8_t bit_p
 void NRF24_write_bits(nrf_radio *radio, const nrf_register reg, uint8_t mask, uint8_t value)
 {
     NRF24_ASSERT(radio);
-    NRF24_ASSERT(value <= UINT8_MAX);
 
     /* Get the current register value */
     uint8_t reg_value = 0;
@@ -87,7 +86,7 @@ void NRF24_write_bits(nrf_radio *radio, const nrf_register reg, uint8_t mask, ui
     
     /* Invert the mask, when we AND it with the register value we set
      * the masked bits to zero. */
-    uint8_t new_value = reg_value & (~mask);
+    uint8_t new_value = (uint8_t) (reg_value & (~mask));
 
     /* Then we can 'add' the value we want */
     new_value |= value;
@@ -115,10 +114,10 @@ static void NRF24_write_bit(nrf_radio *radio, const nrf_register reg,
     uint8_t temp = 0;
     NRF24_read_reg(radio, reg, &temp, 1);
     
-    const uint8_t bit_mask = 1 << bit_pos;
+    const uint8_t bit_mask = (uint8_t) (1U << bit_pos);
     
     // Calculate the new value to be written into the register
-    temp = value ? temp | bit_mask : temp & ~bit_mask;
+    temp = (uint8_t) (value ? temp | bit_mask : temp & ~bit_mask);
 
     NRF24_write_reg(radio, reg, &temp, 1);
 }
