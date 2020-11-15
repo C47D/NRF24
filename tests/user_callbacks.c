@@ -15,7 +15,7 @@ void mock_spi_xfer(const uint8_t *in, uint8_t *out, size_t xfer_size)
 {
     mock_c()->actualCall(__func__)
             ->withMemoryBufferParameter("in", in, xfer_size)
-            ->withMemoryBufferParameter("out", out, xfer_size)
+            ->withOutputParameter("out", out)
             ->withUnsignedIntParameters("xfer_size", (unsigned int) xfer_size);
 }
 
