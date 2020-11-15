@@ -29,6 +29,21 @@ TEST_GROUP(NRF24)
 
     void teardown(void)
     {
+        mock().checkExpectations();
+        mock().clear();
+    }
+
+    /* Helpers */
+
+    /* NOTE: It seems like variables inside helper functions need to be static */
+    void simulateStatus(uint8_t retval) {
+        static uint8_t dummy = retval;
+        static uint8_t param = NRF_CMD_NOP;
+
+        mock().expectOneCall("mock_spi_xfer")
+            .withMemoryBufferParameter("in", (unsigned char *) &param, 1)
+            .withOutputParameterReturning("out", (unsigned char *) &dummy, 1)
+            .withParameter("xfer_size", 1);
     }
 };
 
@@ -85,72 +100,41 @@ TEST(NRF24, readIrqSignal)
     
     mock().checkExpectations();
     mock().clear();
-
-    uint8_t retval = 0x0F;
-    const uint8_t param = NRF_CMD_NOP;
-    mock().expectOneCall("mock_spi_xfer")
-            .withMemoryBufferParameter("in", &param, 1)
-            .withOutputParameterReturning("out", &retval, 1)
-            .withParameter("xfer_size", 1);
-    
-    uint8_t status = NRF24_get_status(&radio);
-    printf("Status: 0x%02X", status);
-
-    mock().checkExpectations();
-    mock().clear();
 }
 
 TEST(NRF24, detectAndClearIrqFlags)
 {
-    int success = NRF24_init(&radio, mock_spi_xfer,
-        mock_ce_write,
-        mock_irq_read,
-        mock_delay_cb);
-    
-    (void) success;
-    
-    uint8_t retval = 0x0F;
-    const uint8_t param = NRF_CMD_NOP;
-    mock().expectOneCall("mock_spi_xfer")
-            .withMemoryBufferParameter("in", &param, 1)
-            .withOutputParameterReturning("out", &retval, 1)
-            .withParameter("xfer_size", 1);
-    
-    uint8_t status = NRF24_get_status(&radio);
-    (void) status;
+    NRF24_init(&radio, mock_spi_xfer, mock_ce_write, mock_irq_read, mock_delay_cb);
 
-    mock().checkExpectations();
-    mock().clear();
+    uint8_t rx_interrupt_flag = NRF_RX_DR_IRQ | 0x0E;
 
-    uint8_t irq_shifted = (1U << NRF_RX_DR_IRQ);
-    
-    uint8_t irq_retval = irq_shifted | 0x0E;
-    mock().expectOneCall("mock_spi_xfer")
-            .withMemoryBufferParameter("in", &param, 1)
-            .withOutputParameterReturning("out", &irq_retval, 1)
-            .withParameter("xfer_size", 1);
+    simulateStatus(rx_interrupt_flag);
     
     nrf_irq flag = NRF24_get_irq_flag(&radio);
-    printf("Flag: %x\r\n", (int) flag);
 
     mock().checkExpectations();
     mock().clear();
     
-    // NRF_MAX_RT_IRQ  = 4, // 0x10
-    // NRF_TX_DS_IRQ   = 5, // 0x20
-    // NRF_RX_DR_IRQ   = 6, // 0x40
-    
-    if ((1 << NRF_MAX_RT_IRQ) & flag) {
-        printf("NRF_MAX_RT_IRQ\r\n");
-    }
+    CHECK_EQUAL(NRF_RX_DR_IRQ, flag);
 
-    if ((1 << NRF_TX_DS_IRQ) & flag) {
-        printf("NRF_TX_DS_IRQ\r\n");
-    }
+    /* Expect a call to NRF24_get_status */
+    simulateStatus(rx_interrupt_flag);
 
-    if ((1 << NRF_RX_DR_IRQ) & flag) {
-        printf("NRF_RX_DR_IRQ\r\n");
-    }
+    /* Expect an update to NRF_REG_STATUS register, the interrupt flag is
+     * cleared by writing a 1 to that flag. */
+    const uint8_t status_reg[] = {
+        NRF_CMD_W_REGISTER | NRF_REG_STATUS,
+        NRF_RX_DR_IRQ | 0x0E
+    };
+    uint8_t dummy[] = {0xFF, 0xFF};
 
-    CHECK_EQUAL(irq_shifted, flag);
+    mock().expectOneCall("mock_spi_xfer")
+            .withMemoryBufferParameter("in", (unsigned char *) &status_reg, 2)
+            .withOutputParameterReturning("out", &dummy, 2)
+            .withParameter("xfer_size", 2);
+
+    NRF24_clear_irq_flag(&radio, flag);
+
+    mock().checkExpectations();
+    mock().clear();
 }

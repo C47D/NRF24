@@ -607,17 +607,15 @@ void NRF24_clear_irq_flag(nrf_radio *radio, const nrf_irq irq_flag)
 {
 	NRF24_ASSERT(radio);
 
-    const uint8_t mask = (uint8_t) (1U << irq_flag);
     uint8_t status = NRF24_get_status(radio);
-    status |= mask;
+    status |= (uint8_t) irq_flag;
     
     NRF24_write_reg(radio, NRF_REG_STATUS, &status, 1);
 }
 
-/* TODO: Should we shift the masked flags? */
 nrf_irq NRF24_get_irq_flag(nrf_radio *radio)
 {
-	NRF24_ASSERT(radio);
+    NRF24_ASSERT(radio);
 
     return (nrf_irq) NRF_ALL_IRQ_MASK & NRF24_cmd_nop(radio);
 }

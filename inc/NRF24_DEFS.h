@@ -97,13 +97,6 @@ typedef enum{
     NRF_MODE_RX = 1,
 } nrf_mode;
 
-typedef enum{
-    NRF_NONE_IRQ    = 0, // 0x00
-    NRF_MAX_RT_IRQ  = 4, // 0x10
-    NRF_TX_DS_IRQ   = 5, // 0x20
-    NRF_RX_DR_IRQ   = 6, // 0x40
-} nrf_irq;
-
 // CONFIG: Configuration Register
 enum {
     NRF_CONFIG_BIT_PRIM_RX      = 0,
@@ -279,6 +272,13 @@ enum {
     NRF_STATUS_TX_DS_MASK   = 0x20,
     NRF_STATUS_RX_DR_MASK   = 0x40,
 };
+
+typedef enum{
+    NRF_NONE_IRQ    = 0, // 0x00
+    NRF_MAX_RT_IRQ  = (1U << NRF_STATUS_BIT_MAX_RT),
+    NRF_TX_DS_IRQ   = (1U << NRF_STATUS_BIT_TX_DS),
+    NRF_RX_DR_IRQ   = (1U << NRF_STATUS_BIT_RX_DR),
+} nrf_irq;
 
 typedef enum {
     NRF_STATUS_TXFIFO_NOTFULL   = 0,
