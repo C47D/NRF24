@@ -12,11 +12,6 @@ extern "C"
 #include "NRF24_HAL.h"
 
 #include "user_callbacks.h"
-
-#include "fff.h"
-DEFINE_FFF_GLOBALS
-
-FAKE_VALUE_FUNC(int, myfake, int)
 }
 
 TEST_GROUP(NRF24)
@@ -26,12 +21,6 @@ TEST_GROUP(NRF24)
 
     void setup(void)
     {
-        /* Reset fakes */
-        myfake_reset();
-
-        /* Reset common fff internal structures */
-        FFF_RESET_HISTORY();
-
 	radio.write_ce_cb = NULL;
 	radio.read_irq_cb = NULL;
 	radio.delay_ms_cb = NULL;

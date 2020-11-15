@@ -43,7 +43,9 @@ INCLUDE_DIRS += $(CPPUTEST_HOME)/include
 INCLUDE_DIRS += $(CPPUTEST_HOME)/include/Platforms/Gcc
 
 INCLUDE_DIRS += inc
-INCLUDE_DIRS += $(FFF_HOME)
+
+# Uncomment when using fff, set FFF_HOME environmental variable to the ff path.
+# INCLUDE_DIRS += $(FFF_HOME)
 
 # Turn on CppUMock
 CPPUTEST_USE_EXTENSIONS = Y
